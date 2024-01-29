@@ -351,20 +351,14 @@ function getSpiralMatrix(size) {
  *  ]                 ]
  */
 function rotateMatrix(matrix) {
-  const rows = matrix.length;
-  const cols = matrix[0].length;
+  const initialMatrix = JSON.parse(JSON.stringify(matrix));
+  const rotatedMatrix = matrix;
 
-  const rotatedMatrix = [];
-  for (let i = 0; i < cols; i += 1) {
-    rotatedMatrix[i] = [];
-  }
-
-  for (let i = 0; i < rows; i += 1) {
-    for (let j = 0; j < cols; j += 1) {
-      rotatedMatrix[j][rows - 1 - i] = matrix[i][j];
+  for (let i = 0; i < matrix.length; i += 1) {
+    for (let j = matrix.length - 1, k = 0; j >= 0; j -= 1, k += 1) {
+      rotatedMatrix[i][k] = initialMatrix[j][i];
     }
   }
-  return rotatedMatrix;
 }
 
 /**
@@ -412,8 +406,27 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let shuffleStr = str;
+
+  for (let i = 1; i <= iterations; i += 1) {
+    let start = '';
+    let end = '';
+
+    for (let j = 0; j < str.length; j += 1) {
+      if (j % 2) {
+        end += shuffleStr[j];
+      } else {
+        start += shuffleStr[j];
+      }
+    }
+    shuffleStr = start + end;
+
+    if (shuffleStr === str) {
+      return shuffleChar(str, iterations % i);
+    }
+  }
+  return shuffleStr;
 }
 
 /**
@@ -433,8 +446,31 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const numbersArr = (num) => {
+    const sortedArr = [];
+    const str = `${num}`;
+    let res = '';
+
+    for (let i = 0; i < str.length; i += 1) {
+      sortedArr.push(str[i]);
+    }
+    res = sortedArr.sort((a, b) => b - a).join('');
+    return res;
+  };
+
+  const next = number + 1;
+  let nearest = number;
+  const max = numbersArr(number);
+
+  for (let i = next; i <= max; i += 1) {
+    if (max === numbersArr(i)) {
+      nearest = i;
+      return nearest;
+    }
+  }
+
+  return nearest;
 }
 
 module.exports = {
